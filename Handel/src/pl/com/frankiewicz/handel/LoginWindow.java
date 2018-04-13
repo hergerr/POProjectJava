@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LoginWindow extends JFrame{
+public class LoginWindow extends GenericWindow{
 
     JLabel loginLabel;
     JTextField loginTextField;
@@ -24,12 +24,7 @@ public class LoginWindow extends JFrame{
 
     public LoginWindow(){
         this.setSize(350,200);
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension dimension = toolkit.getScreenSize();
-        this.setResizable(false);
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Login");
         JPanel loginPanel = new JPanel(new GridBagLayout());
 
 
@@ -65,23 +60,6 @@ public class LoginWindow extends JFrame{
         this.setVisible(true);
     }
 
-    private void addComp(JPanel thePanel, JComponent comp, int xPos, int yPos, int compWidth, int compHeight, int place, int stretch){
-
-        GridBagConstraints gridConstraints = new GridBagConstraints();
-
-        gridConstraints.gridx = xPos;
-        gridConstraints.gridy = yPos;
-        gridConstraints.gridwidth = compWidth;
-        gridConstraints.gridheight = compHeight;
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 1;
-        gridConstraints.insets = new Insets(5,5,5,5);
-        gridConstraints.anchor = place;
-        gridConstraints.fill = stretch;
-
-        thePanel.add(comp, gridConstraints);
-
-    }
 
     private class ListenForButton implements ActionListener{
 
