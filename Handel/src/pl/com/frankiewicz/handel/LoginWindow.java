@@ -19,10 +19,12 @@ public class LoginWindow extends GenericWindow{
     JButton loginButton;
 
     public static void main(String[] args) {
-        new LoginWindow();
+        //new LoginWindow();
+        new ProfessionalWindow();
     }
 
     public LoginWindow(){
+        super();
         this.setSize(350,200);
         this.setLocationRelativeTo(null);
         JPanel loginPanel = new JPanel(new GridBagLayout());

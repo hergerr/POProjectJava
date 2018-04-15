@@ -30,5 +30,21 @@ public abstract class GenericWindow extends JFrame {
 
         thePanel.add(comp, gridConstraints);
 
+    }public void addComp(JPanel thePanel, JComponent comp, int xPos, int yPos, int compWidth, int compHeight, int place, int stretch, int insets){
+
+        GridBagConstraints gridConstraints = new GridBagConstraints();
+
+        gridConstraints.gridx = xPos;
+        gridConstraints.gridy = yPos;
+        gridConstraints.gridwidth = compWidth;
+        gridConstraints.gridheight = compHeight;
+        gridConstraints.weightx = 1;
+        gridConstraints.weighty = 1;
+        gridConstraints.insets = new Insets(insets,insets,insets,insets);
+        gridConstraints.anchor = place;
+        gridConstraints.fill = stretch;
+
+        thePanel.add(comp, gridConstraints);
+
     }
 }
