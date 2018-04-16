@@ -1,7 +1,15 @@
 package pl.com.frankiewicz.handel;
 
+import net.proteanit.sql.DbUtils;
+
 import javax.swing.*;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ProfessionalWindow extends GenericWindow{
     JLabel idLabel, nameLabel, companyNameLabel, companyTypeLabel, emailLabel, phoneLabel, voivodeshipLabel, countyLabel, cityLabel;
@@ -10,10 +18,12 @@ public class ProfessionalWindow extends GenericWindow{
     JButton addButton, deleteButton, editButton, clearButton, findButton;
     JTable dataTable;
     JPanel mainPanel;
+    Connection connection = null;
 
     ProfessionalWindow(){
         super();
         this.setLocationRelativeTo(null);
+        connection = DatabaseConnection.dbConnector();
 
         mainPanel = new JPanel();
 
@@ -26,12 +36,12 @@ public class ProfessionalWindow extends GenericWindow{
         voivodeshipLabel = new JLabel("Województwo");
         countyLabel = new JLabel("Powiat");
         cityLabel = new JLabel("Miejscowosc");
-        idTextField = new JTextField(10);
-        nameTextEdit = new JTextField(10);
-        companyNameTextField = new JTextField(10);
-        companyTypeTextField = new JTextField(10);
-        emailTextField = new JTextField(10);
-        phoneTextField = new JTextField(10);
+        idTextField = new JTextField(15);
+        nameTextEdit = new JTextField(15);
+        companyNameTextField = new JTextField(15);
+        companyTypeTextField = new JTextField(15);
+        emailTextField = new JTextField(15);
+        phoneTextField = new JTextField(15);
         voivodeshipComboBox = new JComboBox();
         countyComboBox = new JComboBox();
         cityComboBox = new JComboBox();
@@ -41,6 +51,10 @@ public class ProfessionalWindow extends GenericWindow{
         clearButton = new JButton("Wyczyść");
         findButton = new JButton("Znajdź");
         dataTable = new JTable(15,9);
+        dataTable.setPreferredSize(new Dimension(900,245));
+        idTextField.setEditable(false);
+
+
 
         Box labelBox = Box.createVerticalBox();
         labelBox.add(idLabel);
@@ -88,20 +102,160 @@ public class ProfessionalWindow extends GenericWindow{
         buttonBox.add(editButton);
         buttonBox.add(Box.createRigidArea(new Dimension(10,5)));
         buttonBox.add(clearButton);
-        buttonBox.add(Box.createRigidArea(new Dimension(510,70)));
+        buttonBox.add(Box.createRigidArea(new Dimension(780,70)));
         buttonBox.add(findButton);
 
-//        Box dataBox = Box.createVerticalBox();
-//        dataBox.add(dataTable);
-//        dataBox.add(dataBox.add(Box.createRigidArea(new Dimension(20,5))));
+        ListenForFindButton listenForFindButton = new ListenForFindButton();
+        findButton.addActionListener(listenForFindButton);
 
+        ListenForAddButton listenForAddButton = new ListenForAddButton();
+        addButton.addActionListener(listenForAddButton);
+
+        ListenForEditButton listenForEditButton = new ListenForEditButton();
+        editButton.addActionListener(listenForEditButton);
+
+        ListenForDeleteButton listenForDeleteButton = new ListenForDeleteButton();
+        deleteButton.addActionListener(listenForDeleteButton);
+
+
+        dataTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try{
+                super.mouseClicked(e);
+                int row = dataTable.getSelectedRow();
+                String id = (dataTable.getModel().getValueAt(row,0)).toString();
+                String query = "select * from Professionals where id = '"+id+"'";
+
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while(resultSet.next()){
+                    idTextField.setText(resultSet.getString("id"));
+                    nameTextEdit.setText(resultSet.getString("name"));
+                    companyNameTextField.setText(resultSet.getString("company_name"));
+                    companyTypeTextField.setText(resultSet.getString("company_type"));
+                    phoneTextField.setText(resultSet.getString("phone_number"));
+                    emailTextField.setText(resultSet.getString("email"));
+                }
+
+                preparedStatement.close();
+                resultSet.close();
+
+            } catch (SQLException exception){
+                    exception.printStackTrace();
+                }
+            }
+        });
 
         addComp(mainPanel,labelBox,0,0,1,1,GridBagConstraints.WEST, GridBagConstraints.NONE);
         addComp(mainPanel,textFieldBox,1,0,1,1,GridBagConstraints.EAST, GridBagConstraints.NONE);
-        addComp(mainPanel, dataTable, 2,0,1,1, GridBagConstraints.EAST, GridBagConstraints.NONE);
+        addComp(mainPanel, dataTable, 2,0,3,1, GridBagConstraints.EAST, GridBagConstraints.NONE);
         addComp(mainPanel, buttonBox,0,3, 1,1,GridBagConstraints.WEST,GridBagConstraints.NONE);
 
         this.add(mainPanel);
-        this.setSize(950,370);
+        this.setSize(1200,370);
     }
+
+    private class ListenForFindButton implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() ==  findButton){
+                try{
+
+                    String query = "select * from Professionals";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    dataTable.setModel(DbUtils.resultSetToTableModel(resultSet));
+                    TableColumnModel tableColumnModel = dataTable.getColumnModel();
+                    tableColumnModel.getColumn(0).setPreferredWidth(20);
+                    tableColumnModel.getColumn(1).setPreferredWidth(100);
+                    tableColumnModel.getColumn(2).setPreferredWidth(100);
+                    tableColumnModel.getColumn(3).setPreferredWidth(100);
+                    tableColumnModel.getColumn(4).setPreferredWidth(70);
+                    tableColumnModel.getColumn(5).setPreferredWidth(150);
+                    tableColumnModel.getColumn(6).setPreferredWidth(100);
+                    tableColumnModel.getColumn(7).setPreferredWidth(100);
+                    tableColumnModel.getColumn(8).setPreferredWidth(100);
+                    resultSet.close();
+                    preparedStatement.close();
+
+                } catch (SQLException exception){
+                    exception.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    private class ListenForAddButton implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == addButton){
+                try{
+                    String query = "insert into Professionals (name, company_name, company_type, phone_number,email)" +
+                            "values (?, ?, ?, ?, ?)";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.setString(1, nameTextEdit.getText());
+                    preparedStatement.setString(2, companyNameTextField.getText());
+                    preparedStatement.setString(3, companyTypeTextField.getText());
+                    preparedStatement.setString(4, phoneTextField.getText());
+                    preparedStatement.setString(5, emailTextField.getText());
+                    preparedStatement.execute();
+
+                    JOptionPane.showMessageDialog(null, "Zapisano");
+                    preparedStatement.close();
+                }catch (SQLException exception){
+                    exception.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    private class ListenForEditButton implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == editButton){
+                try{
+                    String query = "update Professionals set name = '"+nameTextEdit.getText()+"'," +
+                            " company_name = '"+companyNameTextField.getText()+"', company_type= '"+companyTypeTextField.getText()+"'," +
+                            " phone_number = '"+phoneTextField.getText()+"', email = '"+emailTextField.getText()+"'" +
+                            "where id = '"+idTextField.getText()+"'";
+
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.execute();
+
+                    JOptionPane.showMessageDialog(null, "Zmieniono");
+                    preparedStatement.close();
+                } catch (SQLException exception){
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class ListenForDeleteButton implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == deleteButton){
+                try{
+                    String query = "delete from Professionals where id = '"+idTextField.getText()+"'";
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    preparedStatement.execute();
+                    JOptionPane.showMessageDialog(null, "Usunięto");
+                    preparedStatement.close();
+
+
+                } catch (SQLException exception){
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
