@@ -19,6 +19,7 @@ public class ProfessionalWindow extends GenericWindow{
     JTable dataTable;
     JPanel mainPanel;
     Connection connection = null;
+    int voivodeshipId, countyId;
 
     ProfessionalWindow(){
         super();
@@ -117,6 +118,9 @@ public class ProfessionalWindow extends GenericWindow{
         ListenForDeleteButton listenForDeleteButton = new ListenForDeleteButton();
         deleteButton.addActionListener(listenForDeleteButton);
 
+        ListenForClearButton listenForClearButton = new ListenForClearButton();
+        clearButton.addActionListener(listenForClearButton);
+
 
         dataTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -148,13 +152,77 @@ public class ProfessionalWindow extends GenericWindow{
             }
         });
 
+        fillVoivodeshipComboBox();
+
+        voivodeshipComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    countyComboBox.removeAllItems();
+                    voivodeshipId = voivodeshipComboBox.getSelectedIndex();
+                    voivodeshipId += 1;
+                    voivodeshipId *= 2;
+                    String query = "select powiat from Powiaty where wojewodztwoId = " + voivodeshipId;
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet resultSet = preparedStatement.executeQuery();
+
+                    while (resultSet.next()){
+                        countyComboBox.addItem(resultSet.getString("powiat"));
+                    }
+                    countyComboBox.setSelectedIndex(-1);
+
+                } catch(SQLException exception){
+                    exception.printStackTrace();
+                }
+            }
+        });
+
+        countyComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    cityComboBox.removeAllItems();
+                    countyId = countyComboBox.getSelectedIndex();
+                    countyId += 1;
+                    String query = "select miasto from Miasta where wojewodztwoId = " + voivodeshipId + " and powiatId = " + countyId;
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet resultSet = preparedStatement.executeQuery();
+
+                    while (resultSet.next()){
+                        cityComboBox.addItem(resultSet.getString("miasto"));
+                    }
+                    cityComboBox.setSelectedIndex(-1);
+
+                } catch(SQLException exception){
+                    exception.printStackTrace();
+                }
+            }
+        });
+
         addComp(mainPanel,labelBox,0,0,1,1,GridBagConstraints.WEST, GridBagConstraints.NONE);
         addComp(mainPanel,textFieldBox,1,0,1,1,GridBagConstraints.EAST, GridBagConstraints.NONE);
         addComp(mainPanel, dataTable, 2,0,3,1, GridBagConstraints.EAST, GridBagConstraints.NONE);
         addComp(mainPanel, buttonBox,0,3, 1,1,GridBagConstraints.WEST,GridBagConstraints.NONE);
 
+
         this.add(mainPanel);
         this.setSize(1200,370);
+    }
+
+    public void fillVoivodeshipComboBox(){
+        try{
+            String query = "select * from Wojewodztwa";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                voivodeshipComboBox.addItem(resultSet.getString("wojewodztwo"));
+            }
+            voivodeshipComboBox.setSelectedIndex(-1);
+
+        } catch(SQLException exception){
+            exception.printStackTrace();
+        }
     }
 
     private class ListenForFindButton implements ActionListener{
@@ -254,6 +322,21 @@ public class ProfessionalWindow extends GenericWindow{
                 } catch (SQLException exception){
                     exception.printStackTrace();
                 }
+            }
+        }
+    }
+
+    private class ListenForClearButton implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == clearButton){
+                idTextField.setText("");
+                nameTextEdit.setText("");
+                companyNameTextField.setText("");
+                companyTypeTextField.setText("");
+                phoneTextField.setText("");
+                emailTextField.setText("");
             }
         }
     }
