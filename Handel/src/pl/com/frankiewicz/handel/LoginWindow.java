@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LoginWindow extends GenericWindow{
+public class LoginWindow extends GenericWindow {
 
     JLabel loginLabel;
     JTextField loginTextField;
@@ -23,33 +23,33 @@ public class LoginWindow extends GenericWindow{
         //new ProfessionalWindow();
     }
 
-    public LoginWindow(){
+    public LoginWindow() {
         super();
-        this.setSize(350,200);
+        this.setSize(350, 200);
         this.setLocationRelativeTo(null);
         JPanel loginPanel = new JPanel(new GridBagLayout());
 
 
         loginLabel = new JLabel("Login");
-        addComp(loginPanel, loginLabel,0,0,1,1,
+        addComp(loginPanel, loginLabel, 0, 0, 1, 1,
                 GridBagConstraints.EAST, GridBagConstraints.NONE);
 
         loginTextField = new JTextField(15);
         loginTextField.requestFocus();
-        addComp(loginPanel, loginTextField,1,0,1,1,
+        addComp(loginPanel, loginTextField, 1, 0, 1, 1,
                 GridBagConstraints.WEST, GridBagConstraints.NONE);
 
         passwordLabel = new JLabel("Hasło");
-        addComp(loginPanel, passwordLabel,0,1,1,1,
+        addComp(loginPanel, passwordLabel, 0, 1, 1, 1,
                 GridBagConstraints.EAST, GridBagConstraints.NONE);
 
 
         passwordTextField = new JPasswordField(15);
-        addComp(loginPanel, passwordTextField,1,1,1,1,
+        addComp(loginPanel, passwordTextField, 1, 1, 1, 1,
                 GridBagConstraints.WEST, GridBagConstraints.NONE);
 
         loginButton = new JButton("Zaloguj");
-        addComp(loginPanel, loginButton,1,2,1,1,
+        addComp(loginPanel, loginButton, 1, 2, 1, 1,
                 GridBagConstraints.EAST, GridBagConstraints.NONE);
         ListenForButton listenForButton = new ListenForButton();
         loginButton.addActionListener(listenForButton);
@@ -63,23 +63,23 @@ public class LoginWindow extends GenericWindow{
     }
 
 
-    private class ListenForButton implements ActionListener{
+    private class ListenForButton implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == loginButton){
+            if (e.getSource() == loginButton) {
                 try {
                     Connection connection = DatabaseConnection.dbConnector();
                     String query = "select * from Users where login = ? and password = ?";
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
-                    preparedStatement.setString(1,loginTextField.getText());
+                    preparedStatement.setString(1, loginTextField.getText());
                     preparedStatement.setString(2, passwordTextField.getText());
                     ResultSet resultSet = preparedStatement.executeQuery();
 
                     int count = 0;
-                    while (resultSet.next())++count;
+                    while (resultSet.next()) ++count;
 
-                    if(count == 1){
+                    if (count == 1) {
                         LoginWindow.this.dispose();
                         ChooseAPersonWindow chooseAPersonWindow = new ChooseAPersonWindow();
                         chooseAPersonWindow.setVisible(true);
@@ -87,7 +87,9 @@ public class LoginWindow extends GenericWindow{
 
                     resultSet.close();
                     preparedStatement.close();
-                } catch (SQLException error) {JOptionPane.showMessageDialog(null, error);}
+                } catch (SQLException error) {
+                    JOptionPane.showMessageDialog(null, error);
+                }
 
 
             }

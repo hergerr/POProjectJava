@@ -277,26 +277,28 @@ public class ProfessionalWindow extends GenericWindow {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addButton) {
-                try {
-                    String query = "insert into Professionals (name, company_name, company_type, phone_number,email, " +
-                            "voivodeship, county, city)" +
-                            "values (?, ?, ?, ?, ?, ?, ?, ?)";
-                    PreparedStatement preparedStatement = connection.prepareStatement(query);
-                    preparedStatement.setString(1, nameTextEdit.getText());
-                    preparedStatement.setString(2, companyNameTextField.getText());
-                    preparedStatement.setString(3, companyTypeTextField.getText());
-                    preparedStatement.setString(4, phoneTextField.getText());
-                    preparedStatement.setString(5, emailTextField.getText());
-                    preparedStatement.setString(6, voivodeshipComboBox.getSelectedItem().toString());
-                    preparedStatement.setString(7, countyComboBox.getSelectedItem().toString());
-                    preparedStatement.setString(8, cityComboBox.getSelectedItem().toString());
-                    preparedStatement.execute();
+                if (phoneTextField.getText().length() == 9 || phoneTextField.getText().length() == 11) {
+                    try {
+                        String query = "insert into Professionals (name, company_name, company_type, phone_number,email, " +
+                                "voivodeship, county, city)" +
+                                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+                        PreparedStatement preparedStatement = connection.prepareStatement(query);
+                        preparedStatement.setString(1, nameTextEdit.getText());
+                        preparedStatement.setString(2, companyNameTextField.getText());
+                        preparedStatement.setString(3, companyTypeTextField.getText());
+                        preparedStatement.setString(4, phoneTextField.getText());
+                        preparedStatement.setString(5, emailTextField.getText());
+                        preparedStatement.setString(6, voivodeshipComboBox.getSelectedItem().toString());
+                        preparedStatement.setString(7, countyComboBox.getSelectedItem().toString());
+                        preparedStatement.setString(8, cityComboBox.getSelectedItem().toString());
+                        preparedStatement.execute();
 
-                    JOptionPane.showMessageDialog(null, "Zapisano");
-                    preparedStatement.close();
-                } catch (SQLException exception) {
-                    exception.printStackTrace();
-                }
+                        JOptionPane.showMessageDialog(null, "Zapisano");
+                        preparedStatement.close();
+                    } catch (SQLException exception) {
+                        exception.printStackTrace();
+                    }
+                } else JOptionPane.showMessageDialog(null, "Zły numer telefonu");
 
             }
         }
@@ -307,23 +309,25 @@ public class ProfessionalWindow extends GenericWindow {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == editButton) {
-                try {
-                    String query = "update Professionals set name = '" + nameTextEdit.getText() + "'," +
-                            " company_name = '" + companyNameTextField.getText() + "', company_type= '" + companyTypeTextField.getText() + "'," +
-                            " phone_number = '" + phoneTextField.getText() + "', email = '" + emailTextField.getText() + "', " +
-                            " voivodeship = '" + voivodeshipComboBox.getSelectedItem().toString() + "', " +
-                            " county = '" + countyComboBox.getSelectedItem().toString() + "'," +
-                            " city = '" + cityComboBox.getSelectedItem().toString() + "'" +
-                            " where id = '" + idTextField.getText() + "'";
+                if (phoneTextField.getText().length() == 9 || phoneTextField.getText().length() == 11) {
+                    try {
+                        String query = "update Professionals set name = '" + nameTextEdit.getText() + "'," +
+                                " company_name = '" + companyNameTextField.getText() + "', company_type= '" + companyTypeTextField.getText() + "'," +
+                                " phone_number = '" + phoneTextField.getText() + "', email = '" + emailTextField.getText() + "', " +
+                                " voivodeship = '" + voivodeshipComboBox.getSelectedItem().toString() + "', " +
+                                " county = '" + countyComboBox.getSelectedItem().toString() + "'," +
+                                " city = '" + cityComboBox.getSelectedItem().toString() + "'" +
+                                " where id = '" + idTextField.getText() + "'";
 
-                    PreparedStatement preparedStatement = connection.prepareStatement(query);
-                    preparedStatement.execute();
+                        PreparedStatement preparedStatement = connection.prepareStatement(query);
+                        preparedStatement.execute();
 
-                    JOptionPane.showMessageDialog(null, "Zmieniono");
-                    preparedStatement.close();
-                } catch (SQLException exception) {
-                    exception.printStackTrace();
-                }
+                        JOptionPane.showMessageDialog(null, "Zmieniono");
+                        preparedStatement.close();
+                    } catch (SQLException exception) {
+                        exception.printStackTrace();
+                    }
+                } else JOptionPane.showMessageDialog(null, "Zły numer telefonu");
             }
         }
     }
