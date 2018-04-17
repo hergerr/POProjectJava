@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ProfessionalWindow extends GenericWindow{
+public class ProfessionalWindow extends GenericWindow {
     JLabel idLabel, nameLabel, companyNameLabel, companyTypeLabel, emailLabel, phoneLabel, voivodeshipLabel, countyLabel, cityLabel;
     JTextField idTextField, nameTextEdit, companyNameTextField, companyTypeTextField, emailTextField, phoneTextField;
     JComboBox voivodeshipComboBox, countyComboBox, cityComboBox;
@@ -21,9 +21,8 @@ public class ProfessionalWindow extends GenericWindow{
     Connection connection = null;
     int voivodeshipId, countyId;
 
-    ProfessionalWindow(){
+    ProfessionalWindow() {
         super();
-        this.setLocationRelativeTo(null);
         connection = DatabaseConnection.dbConnector();
 
         mainPanel = new JPanel();
@@ -51,59 +50,58 @@ public class ProfessionalWindow extends GenericWindow{
         editButton = new JButton("Edytuj");
         clearButton = new JButton("Wyczyść");
         findButton = new JButton("Znajdź");
-        dataTable = new JTable(15,9);
-        dataTable.setPreferredSize(new Dimension(900,245));
+        dataTable = new JTable(15, 9);
+        dataTable.setPreferredSize(new Dimension(900, 245));
         idTextField.setEditable(false);
-
 
 
         Box labelBox = Box.createVerticalBox();
         labelBox.add(idLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,10)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 10)));
         labelBox.add(nameLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,10)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 10)));
         labelBox.add(companyNameLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,10)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 10)));
         labelBox.add(companyTypeLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,10)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 10)));
         labelBox.add(emailLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,10)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 10)));
         labelBox.add(phoneLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,15)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 15)));
         labelBox.add(voivodeshipLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,15)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 15)));
         labelBox.add(countyLabel);
-        labelBox.add(Box.createRigidArea(new Dimension(0,15)));
+        labelBox.add(Box.createRigidArea(new Dimension(0, 15)));
         labelBox.add(cityLabel);
 
         Box textFieldBox = Box.createVerticalBox();
         textFieldBox.add(idTextField);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(nameTextEdit);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(companyNameTextField);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(companyTypeTextField);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(emailTextField);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(phoneTextField);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,20)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 20)));
         textFieldBox.add(voivodeshipComboBox);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(countyComboBox);
-        textFieldBox.add(Box.createRigidArea(new Dimension(0,5)));
+        textFieldBox.add(Box.createRigidArea(new Dimension(0, 5)));
         textFieldBox.add(cityComboBox);
 
         Box buttonBox = Box.createHorizontalBox();
         buttonBox.add(addButton);
-        buttonBox.add(Box.createRigidArea(new Dimension(10,5)));
+        buttonBox.add(Box.createRigidArea(new Dimension(10, 5)));
         buttonBox.add(deleteButton);
-        buttonBox.add(Box.createRigidArea(new Dimension(10,5)));
+        buttonBox.add(Box.createRigidArea(new Dimension(10, 5)));
         buttonBox.add(editButton);
-        buttonBox.add(Box.createRigidArea(new Dimension(10,5)));
+        buttonBox.add(Box.createRigidArea(new Dimension(10, 5)));
         buttonBox.add(clearButton);
-        buttonBox.add(Box.createRigidArea(new Dimension(780,70)));
+        buttonBox.add(Box.createRigidArea(new Dimension(780, 70)));
         buttonBox.add(findButton);
 
         ListenForFindButton listenForFindButton = new ListenForFindButton();
@@ -125,28 +123,32 @@ public class ProfessionalWindow extends GenericWindow{
         dataTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                try{
-                super.mouseClicked(e);
-                int row = dataTable.getSelectedRow();
-                String id = (dataTable.getModel().getValueAt(row,0)).toString();
-                String query = "select * from Professionals where id = '"+id+"'";
+                try {
+                    super.mouseClicked(e);
+                    int row = dataTable.getSelectedRow();
+                    String id = (dataTable.getModel().getValueAt(row, 0)).toString();
+                    String query = "select * from Professionals where id = '" + id + "'";
 
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+                    ResultSet resultSet = preparedStatement.executeQuery();
 
-                while(resultSet.next()){
-                    idTextField.setText(resultSet.getString("id"));
-                    nameTextEdit.setText(resultSet.getString("name"));
-                    companyNameTextField.setText(resultSet.getString("company_name"));
-                    companyTypeTextField.setText(resultSet.getString("company_type"));
-                    phoneTextField.setText(resultSet.getString("phone_number"));
-                    emailTextField.setText(resultSet.getString("email"));
-                }
+                    while (resultSet.next()) {
+                        idTextField.setText(resultSet.getString("id"));
+                        nameTextEdit.setText(resultSet.getString("name"));
+                        companyNameTextField.setText(resultSet.getString("company_name"));
+                        companyTypeTextField.setText(resultSet.getString("company_type"));
+                        phoneTextField.setText(resultSet.getString("phone_number"));
+                        emailTextField.setText(resultSet.getString("email"));
+                        voivodeshipComboBox.setSelectedItem(resultSet.getString("voivodeship"));
+                        countyComboBox.setSelectedItem(resultSet.getString("county"));
+                        cityComboBox.setSelectedItem(resultSet.getString("city"));
+                    }
 
-                preparedStatement.close();
-                resultSet.close();
 
-            } catch (SQLException exception){
+                    preparedStatement.close();
+                    resultSet.close();
+
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
             }
@@ -157,7 +159,7 @@ public class ProfessionalWindow extends GenericWindow{
         voivodeshipComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     countyComboBox.removeAllItems();
                     voivodeshipId = voivodeshipComboBox.getSelectedIndex();
                     voivodeshipId += 1;
@@ -166,12 +168,12 @@ public class ProfessionalWindow extends GenericWindow{
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet resultSet = preparedStatement.executeQuery();
 
-                    while (resultSet.next()){
+                    while (resultSet.next()) {
                         countyComboBox.addItem(resultSet.getString("powiat"));
                     }
                     countyComboBox.setSelectedIndex(-1);
 
-                } catch(SQLException exception){
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
             }
@@ -180,7 +182,7 @@ public class ProfessionalWindow extends GenericWindow{
         countyComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     cityComboBox.removeAllItems();
                     countyId = countyComboBox.getSelectedIndex();
                     countyId += 1;
@@ -188,53 +190,65 @@ public class ProfessionalWindow extends GenericWindow{
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet resultSet = preparedStatement.executeQuery();
 
-                    while (resultSet.next()){
+                    while (resultSet.next()) {
                         cityComboBox.addItem(resultSet.getString("miasto"));
                     }
                     cityComboBox.setSelectedIndex(-1);
 
-                } catch(SQLException exception){
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
             }
         });
 
-        addComp(mainPanel,labelBox,0,0,1,1,GridBagConstraints.WEST, GridBagConstraints.NONE);
-        addComp(mainPanel,textFieldBox,1,0,1,1,GridBagConstraints.EAST, GridBagConstraints.NONE);
-        addComp(mainPanel, dataTable, 2,0,3,1, GridBagConstraints.EAST, GridBagConstraints.NONE);
-        addComp(mainPanel, buttonBox,0,3, 1,1,GridBagConstraints.WEST,GridBagConstraints.NONE);
+        addComp(mainPanel, labelBox, 0, 0, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);
+        addComp(mainPanel, textFieldBox, 1, 0, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE);
+        addComp(mainPanel, dataTable, 2, 0, 3, 1, GridBagConstraints.EAST, GridBagConstraints.NONE);
+        addComp(mainPanel, buttonBox, 0, 3, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE);
 
 
         this.add(mainPanel);
-        this.setSize(1200,370);
+        this.setSize(1230, 370);
     }
 
-    public void fillVoivodeshipComboBox(){
-        try{
+    public void fillVoivodeshipComboBox() {
+        try {
             String query = "select * from Wojewodztwa";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 voivodeshipComboBox.addItem(resultSet.getString("wojewodztwo"));
             }
             voivodeshipComboBox.setSelectedIndex(-1);
 
-        } catch(SQLException exception){
+        } catch (SQLException exception) {
             exception.printStackTrace();
         }
     }
 
-    private class ListenForFindButton implements ActionListener{
+    private class ListenForFindButton implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() ==  findButton){
-                try{
+            if (e.getSource() == findButton) {
+                PreparedStatement preparedStatement = null;
+                ResultSet resultSet = null;
+                String query;
+                try {
+                    if (voivodeshipComboBox.getSelectedIndex() == -1) {
+                        query = "select * from Professionals";
+                    } else if (voivodeshipComboBox.getSelectedIndex() != -1 && countyComboBox.getSelectedIndex() == -1) {
+                        String voivodeship = voivodeshipComboBox.getSelectedItem().toString();
+                        query = "select * from Professionals where voivodeship = '" + voivodeship + "' ";
+                    } else {
+                        String voivodeship = voivodeshipComboBox.getSelectedItem().toString();
+                        String county = countyComboBox.getSelectedItem().toString();
+                        query = "select * from Professionals where voivodeship = '" + voivodeship + "' and county = '" + county + "'";
+                    }
 
-                    String query = "select * from Professionals";
-                    PreparedStatement preparedStatement = connection.prepareStatement(query);
-                    ResultSet resultSet = preparedStatement.executeQuery();
+                    preparedStatement = connection.prepareStatement(query);
+                    resultSet = preparedStatement.executeQuery();
                     dataTable.setModel(DbUtils.resultSetToTableModel(resultSet));
                     TableColumnModel tableColumnModel = dataTable.getColumnModel();
                     tableColumnModel.getColumn(0).setPreferredWidth(20);
@@ -249,7 +263,8 @@ public class ProfessionalWindow extends GenericWindow{
                     resultSet.close();
                     preparedStatement.close();
 
-                } catch (SQLException exception){
+
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
 
@@ -257,25 +272,29 @@ public class ProfessionalWindow extends GenericWindow{
         }
     }
 
-    private class ListenForAddButton implements ActionListener{
+    private class ListenForAddButton implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == addButton){
-                try{
-                    String query = "insert into Professionals (name, company_name, company_type, phone_number,email)" +
-                            "values (?, ?, ?, ?, ?)";
+            if (e.getSource() == addButton) {
+                try {
+                    String query = "insert into Professionals (name, company_name, company_type, phone_number,email, " +
+                            "voivodeship, county, city)" +
+                            "values (?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     preparedStatement.setString(1, nameTextEdit.getText());
                     preparedStatement.setString(2, companyNameTextField.getText());
                     preparedStatement.setString(3, companyTypeTextField.getText());
                     preparedStatement.setString(4, phoneTextField.getText());
                     preparedStatement.setString(5, emailTextField.getText());
+                    preparedStatement.setString(6, voivodeshipComboBox.getSelectedItem().toString());
+                    preparedStatement.setString(7, countyComboBox.getSelectedItem().toString());
+                    preparedStatement.setString(8, cityComboBox.getSelectedItem().toString());
                     preparedStatement.execute();
 
                     JOptionPane.showMessageDialog(null, "Zapisano");
                     preparedStatement.close();
-                }catch (SQLException exception){
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
 
@@ -283,60 +302,66 @@ public class ProfessionalWindow extends GenericWindow{
         }
     }
 
-    private class ListenForEditButton implements ActionListener{
+    private class ListenForEditButton implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == editButton){
-                try{
-                    String query = "update Professionals set name = '"+nameTextEdit.getText()+"'," +
-                            " company_name = '"+companyNameTextField.getText()+"', company_type= '"+companyTypeTextField.getText()+"'," +
-                            " phone_number = '"+phoneTextField.getText()+"', email = '"+emailTextField.getText()+"'" +
-                            "where id = '"+idTextField.getText()+"'";
+            if (e.getSource() == editButton) {
+                try {
+                    String query = "update Professionals set name = '" + nameTextEdit.getText() + "'," +
+                            " company_name = '" + companyNameTextField.getText() + "', company_type= '" + companyTypeTextField.getText() + "'," +
+                            " phone_number = '" + phoneTextField.getText() + "', email = '" + emailTextField.getText() + "', " +
+                            " voivodeship = '" + voivodeshipComboBox.getSelectedItem().toString() + "', " +
+                            " county = '" + countyComboBox.getSelectedItem().toString() + "'," +
+                            " city = '" + cityComboBox.getSelectedItem().toString() + "'" +
+                            " where id = '" + idTextField.getText() + "'";
 
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     preparedStatement.execute();
 
                     JOptionPane.showMessageDialog(null, "Zmieniono");
                     preparedStatement.close();
-                } catch (SQLException exception){
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
             }
         }
     }
 
-    private class ListenForDeleteButton implements ActionListener{
+    private class ListenForDeleteButton implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == deleteButton){
-                try{
-                    String query = "delete from Professionals where id = '"+idTextField.getText()+"'";
+            if (e.getSource() == deleteButton) {
+                try {
+                    String query = "delete from Professionals where id = '" + idTextField.getText() + "'";
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     preparedStatement.execute();
                     JOptionPane.showMessageDialog(null, "Usunięto");
                     preparedStatement.close();
 
 
-                } catch (SQLException exception){
+                } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
             }
         }
     }
 
-    private class ListenForClearButton implements ActionListener{
+    private class ListenForClearButton implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == clearButton){
+            if (e.getSource() == clearButton) {
                 idTextField.setText("");
                 nameTextEdit.setText("");
                 companyNameTextField.setText("");
                 companyTypeTextField.setText("");
                 phoneTextField.setText("");
                 emailTextField.setText("");
+                voivodeshipComboBox.setSelectedIndex(-1);
+                countyComboBox.setSelectedIndex(-1);
+                cityComboBox.setSelectedIndex(-1);
             }
         }
     }
